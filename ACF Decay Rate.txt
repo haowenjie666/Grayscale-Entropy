@@ -1,0 +1,17 @@
+# Calculate ACF decay rate over the first 50 lags for each dataset
+def calculate_acf_decay_rate_50(data, label):
+    # Compute the autocorrelation for the first 50 lags
+    acf_values = [data['Entropy'].autocorr(lag) for lag in range(1, 51)]
+    
+    # Calculate the average decay rate (difference between consecutive acf values)
+    decay_rates = [-1 * (acf_values[i] - acf_values[i - 1]) for i in range(1, len(acf_values))]
+    avg_decay_rate = sum(decay_rates) / len(decay_rates)
+    
+    return label, avg_decay_rate
+
+# Compute the decay rates for each dataset over the first 50 lags
+decay_rates_50 = [calculate_acf_decay_rate_50(db_data, "DB"), 
+                  calculate_acf_decay_rate_50(gb_data, "GB"), 
+                  calculate_acf_decay_rate_50(sc_data, "SC")]
+
+decay_rates_50

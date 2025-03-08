@@ -1,0 +1,52 @@
+# Perform Fourier Transform and plot the power spectrum for each dataset
+def plot_fourier_spectrum(data, label, color):
+    # Demean the data
+    entropy_values = data['Entropy'] - np.mean(data['Entropy'])
+    
+    # Perform Fourier Transform
+    spectrum = np.fft.fft(entropy_values)
+    freq = np.fft.fftfreq(len(entropy_values))
+    
+    # Only take the positive half of the frequencies for plotting
+    positive_freqs = freq[:len(freq) // 2]
+    power = np.abs(spectrum[:len(spectrum) // 2])**2  # Power spectrum
+    
+    # Plot the power spectrum
+    plt.figure(figsize=(10, 6))
+    plt.plot(positive_freqs, power, color=color)
+    plt.title(f'Power Spectrum of Entropy for {label}')
+    plt.xlabel('Frequency')
+    plt.ylabel('Power')
+    plt.show()
+
+# Plot power spectrum for each dataset with specified colors
+plot_fourier_spectrum(db_data, "DB", 'blue')
+plot_fourier_spectrum(gb_data, "GB", 'purple')
+plot_fourier_spectrum(sc_data, "SC", 'gray')
+
+
+# Plot all three power spectra on the same figure for direct comparison
+plt.figure(figsize=(10, 6))
+
+# Compute and plot the power spectrum for each dataset with specified colors
+for data, label, color in [(db_data, "DB", 'blue'), 
+                           (gb_data, "GB", 'purple'), 
+                           (sc_data, "SC", 'gray')]:
+    entropy_values = data['Entropy'] - np.mean(data['Entropy'])
+    spectrum = np.fft.fft(entropy_values)
+    freq = np.fft.fftfreq(len(entropy_values))
+    
+    # Only take the positive half of the frequencies for plotting
+    positive_freqs = freq[:len(freq) // 2]
+    power = np.abs(spectrum[:len(spectrum) // 2])**2  # Power spectrum
+    
+    # Plot each power spectrum
+    plt.plot(positive_freqs, power, label=label, color=color)
+
+# Add labels, title, and legend
+plt.xlabel('Frequency')
+plt.ylabel('Power')
+plt.title('Power Spectrum Comparison of Entropy for DB, GB, and SC Groups')
+plt.legend()
+
+plt.show()

@@ -1,0 +1,28 @@
+import matplotlib.pyplot as plt
+from statsmodels.graphics.tsaplots import plot_acf
+
+# Function to plot autocorrelation
+def plot_autocorrelation(data, label):
+    plt.figure(figsize=(10, 5))
+    plot_acf(data['Entropy'], lags=50, title=f'Autocorrelation of Entropy for {label}')
+    plt.show()
+
+# Plot autocorrelation for each dataset
+plot_autocorrelation(db_data, "DB")
+plot_autocorrelation(gb_data, "GB")
+plot_autocorrelation(sc_data, "SC")
+# Redraw the plot with English labels only
+plt.figure(figsize=(10, 6))
+
+# Plot each group with specified colors
+plt.plot(range(51), [db_data['Entropy'].autocorr(lag) for lag in range(51)], label='DB', color='blue')
+plt.plot(range(51), [gb_data['Entropy'].autocorr(lag) for lag in range(51)], label='GB', color='purple')
+plt.plot(range(51), [sc_data['Entropy'].autocorr(lag) for lag in range(51)], label='SC', color='gray')
+
+# Add English labels, title, and legend
+plt.xlabel('Lag')
+plt.ylabel('ACF')
+plt.title('Comparison of Autocorrelation Functions for GB, DB, and SC Groups')
+plt.legend()
+
+plt.show()

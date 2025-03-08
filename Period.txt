@@ -1,0 +1,23 @@
+# Function to calculate the period based on filtered peaks in the ACF
+def estimate_period_from_filtered_acf(data, label):
+    # Compute the autocorrelation values for a larger range to capture periodicity
+    acf_values = [data['Entropy'].autocorr(lag) for lag in range(1, 101)]
+    
+    # Find peaks in the ACF values
+    peaks, _ = find_peaks(acf_values, distance=5)  # distance parameter to ignore very close peaks
+    
+    # Calculate the period as the average distance between consecutive peaks
+    if len(peaks) > 1:
+        peak_distances = np.diff(peaks)  # Difference between consecutive peak indices
+        estimated_period = np.mean(peak_distances)  # Average distance as the estimated period
+    else:
+        estimated_period = None  # Not enough peaks to calculate a period
+    
+    return label, estimated_period
+
+# Estimate periods for DB, GB, and SC datasets based on filtered ACF peaks
+estimated_periods_filtered_acf = [estimate_period_from_filtered_acf(db_data, "DB"),
+                                  estimate_period_from_filtered_acf(gb_data, "GB"),
+                                  estimate_period_from_filtered_acf(sc_data, "SC")]
+
+estimated_periods_filtered_acf
